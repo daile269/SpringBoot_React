@@ -8,12 +8,15 @@ import com.example.springboot_reactjs.exception.ErrorCode;
 import com.example.springboot_reactjs.repositories.CategoryRepository;
 import com.example.springboot_reactjs.service.ICategoryService;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@EnableMethodSecurity
 public class CategoryService implements ICategoryService {
 
     private final CategoryRepository categoryRepository;
@@ -31,6 +34,7 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
     public List<CategoryDTO> getCategoryNoPageable() {
         List<CategoryDTO> result = categoryRepository.findAll().stream()
                 .map(category -> mapperDTO(category)).collect(Collectors.toList());

@@ -8,7 +8,12 @@ import org.springframework.http.HttpStatusCode;
 public enum ErrorCode {
 
     PRODUCT_NOT_FOUND(999,"Product not found"),
-    CATEGORY_NOT_FOUND(999,"Category not found");
+    ACCOUNT_IS_EXISTS(989,"Account is exists"),
+    ACCOUNT_IS_NOT_EXISTS(979,"Account is not exists"),
+    USERNAME_OR_PASSWORD_VALID(969,"Username or password is valid!"),
+    CATEGORY_NOT_FOUND(969,"Category not found"),
+    UNAUTHENTICATED(777,"UNAUTHENTICATED" );
+
     private final int code;
     private final String message;
     ErrorCode(int code, String message) {
