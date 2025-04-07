@@ -1,10 +1,7 @@
 package com.example.springboot_reactjs.service.Impl;
 
-import com.example.springboot_reactjs.dto.request.LogoutRequest;
 import com.example.springboot_reactjs.entity.Account;
-import com.example.springboot_reactjs.entity.InvalidatedToken;
 import com.example.springboot_reactjs.repositories.AccountRepository;
-import com.example.springboot_reactjs.repositories.InvalidatedTokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -20,7 +17,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.function.Function;
 
 @Service
@@ -33,7 +29,6 @@ public class JwtService {
 
     private final AccountRepository accountRepository;
 
-    private final InvalidatedTokenRepository invalidatedTokenRepository;
     public String generateToken(String username) {
 
         Account account = accountRepository.findByUsername(username);
@@ -74,7 +69,7 @@ public class JwtService {
 
     public boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token) && !isTokenInvalidated(token));
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token) );
     }
 
     private boolean isTokenExpired(String token) {
@@ -85,17 +80,15 @@ public class JwtService {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    public boolean isTokenInvalidated(String token){
-        return invalidatedTokenRepository.findByToken(token)!=null;
-    }
-    public void logout(LogoutRequest request){
-        String token = request.getToken();
-        Date expiryDate = extractExpiration(token);
-        InvalidatedToken invalidatedToken = InvalidatedToken.builder()
-                .token(token)
-                .expirationDate(expiryDate.toInstant())
-                .build();
-        invalidatedTokenRepository.save(invalidatedToken);
-    }
+
+//    public void logout(LogoutRequest request){
+//        String token = request.getToken();
+//        Date expiryDate = extractExpiration(token);
+//        InvalidatedToken invalidatedToken = InvalidatedToken.builder()
+//                .token(token)
+//                .expirationDate(expiryDate.toInstant())
+//                .build();
+//        invalidatedTokenRepository.save(invalidatedToken);
+//    }
 
 }

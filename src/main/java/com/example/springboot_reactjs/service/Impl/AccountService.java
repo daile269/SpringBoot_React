@@ -10,7 +10,7 @@ import com.example.springboot_reactjs.repositories.AccountRepository;
 import com.example.springboot_reactjs.service.IAccountService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -38,7 +38,7 @@ public class AccountService implements IAccountService {
     @Override
     public AccountDTO saveAccount(Account account) {
         account.setPassword(encoder.encode(account.getPassword()));
-        Account saveAccount = accountRepository.save(account);
+         accountRepository.save(account);
         return accountToDTO(account);
     }
 
@@ -49,7 +49,7 @@ public class AccountService implements IAccountService {
     }
 
     @Override
-    @PostAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public List<AccountDTO> getAllAccount() {
         List<AccountDTO> result = accountRepository.findAll().stream()
                 .map(account -> accountToDTO(account)).collect(Collectors.toList());
@@ -57,7 +57,7 @@ public class AccountService implements IAccountService {
     }
 
     @Override
-    @PostAuthorize("returnObject.username==authentication.name or hasAuthority('ADMIN')")
+    @PreAuthorize("returnObject.username==authentication.name or hasAuthority('ADMIN')")
     public AccountDTO getAccountById(Long id) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_IS_NOT_EXISTS));
         return accountToDTO(account);

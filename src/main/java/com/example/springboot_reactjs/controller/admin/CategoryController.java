@@ -2,6 +2,7 @@ package com.example.springboot_reactjs.controller.admin;
 
 import com.example.springboot_reactjs.dto.CategoryDTO;
 import com.example.springboot_reactjs.dto.ProductDTO;
+import com.example.springboot_reactjs.dto.response.ApiResponse;
 import com.example.springboot_reactjs.entity.Category;
 import com.example.springboot_reactjs.entity.Product;
 import com.example.springboot_reactjs.service.ICategoryService;
@@ -24,8 +25,13 @@ public class CategoryController {
 
     @PostMapping
     @ResponseBody
-    public CategoryDTO createCategory(@RequestBody Category category){
-        return categoryService.saveCategory(category);
+    public ApiResponse<CategoryDTO> createCategory(@RequestBody Category category){
+
+        return ApiResponse.<CategoryDTO>builder()
+                .code(200)
+                .result(categoryService.saveCategory(category))
+                .message("Thêm thành công")
+                .build();
     }
 
     @GetMapping
@@ -42,9 +48,13 @@ public class CategoryController {
 
     @PutMapping(value = "/{categoryId}")
     @ResponseBody
-    public CategoryDTO updateCategory(@RequestBody Category category, @PathVariable Long categoryId){
+    public ApiResponse<CategoryDTO> updateCategory(@RequestBody Category category, @PathVariable Long categoryId){
         category.setId(categoryId);
-        return categoryService.saveCategory(category);
+        return ApiResponse.<CategoryDTO>builder()
+                .code(200)
+                .result(categoryService.saveCategory(category))
+                .message("Cập nhật thành công")
+                .build();
     }
 
     @DeleteMapping(value = "/{categoryId}")
@@ -56,9 +66,13 @@ public class CategoryController {
 
     @PostMapping(value = "/{categoryId}/products")
     @ResponseBody
-    public ProductDTO addProductWithCategory(@RequestBody Product product,
+    public ApiResponse<ProductDTO> addProductWithCategory(@RequestBody Product product,
             @PathVariable Long categoryId){
-        return productService.addProductWithCategory(product,categoryId);
+        return ApiResponse.<ProductDTO>builder()
+                .code(200)
+                .result(productService.addProductWithCategory(product,categoryId))
+                .message("Thêm thành công")
+                .build();
     }
 
     @GetMapping(value = "/{categoryId}/products")

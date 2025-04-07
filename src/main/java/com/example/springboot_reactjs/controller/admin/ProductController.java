@@ -1,11 +1,13 @@
 package com.example.springboot_reactjs.controller.admin;
 
 import com.example.springboot_reactjs.dto.ProductDTO;
+import com.example.springboot_reactjs.dto.response.ApiResponse;
 import com.example.springboot_reactjs.entity.Product;
 import com.example.springboot_reactjs.service.IProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +21,12 @@ public class ProductController {
 
     @PostMapping
     @ResponseBody
-    public ProductDTO createProduct(@RequestBody Product product){
-        return productService.save(product);
+    public ApiResponse<ProductDTO> createProduct(@RequestBody Product product){
+        return ApiResponse.<ProductDTO>builder()
+                .code(200)
+                .message("Thêm mới sản phẩm thành công")
+                .result(productService.save(product))
+                .build();
     }
 
     @GetMapping
@@ -37,17 +43,22 @@ public class ProductController {
 
     @PutMapping(value = "/{productId}")
     @ResponseBody
-    public ProductDTO updateProduct(@RequestBody Product product,
+    public ApiResponse<ProductDTO> updateProduct(@RequestBody Product product,
                                     @PathVariable Long productId){
         product.setId(productId);
-        return productService.save(product);
+
+        return ApiResponse.<ProductDTO>builder()
+                .code(200)
+                .message("Cập nhật sản phẩm thành công")
+                .result(productService.save(product))
+                .build();
     }
 
     @DeleteMapping(value = "{productId}")
     @ResponseBody
-    public List<ProductDTO> deleteProduct(@PathVariable Long productId){
+    public ResponseEntity<String> deleteProduct(@PathVariable Long productId){
         productService.deleteProduct(productId);
-        return productService.getListProductNoPageable();
+        return ResponseEntity.ok("Xoa thành công");
     }
 
     @GetMapping(value = "/paginated")
@@ -60,8 +71,12 @@ public class ProductController {
 
     @PatchMapping(value ="/{productId}/category/{categoryId}")
     @ResponseBody
-    public ProductDTO updateCategoryOfProduct(@PathVariable Long productId, @PathVariable Long categoryId){
-        return productService.updateCategoryOfProduct(productId,categoryId);
+    public ApiResponse<ProductDTO> updateCategoryOfProduct(@PathVariable Long productId, @PathVariable Long categoryId){
+        return ApiResponse.<ProductDTO>builder()
+                .code(200)
+                .message("Cập nhật sản phẩm thành công")
+                .result(productService.updateCategoryOfProduct(productId,categoryId))
+                .build();
     }
 
 }

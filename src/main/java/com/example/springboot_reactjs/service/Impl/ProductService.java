@@ -22,12 +22,15 @@ public class ProductService implements IProductService {
 
     private final ProductRepository productRepository;
 
+
     private final ModelMapper modelMapper;
 
     private final CategoryRepository categoryRepository;
 
     @Override
     public ProductDTO save(Product product) {
+        categoryRepository.findById(product.getCategoryId())
+                .orElseThrow((() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND)));
         productRepository.save(product);
         return mapToProductDTO(product);
     }
@@ -48,7 +51,7 @@ public class ProductService implements IProductService {
 
     @Override
     public void deleteProduct(Long id) {
-        Product product = productRepository.findById(id)
+        productRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
         productRepository.deleteById(id);
     }
@@ -71,7 +74,7 @@ public class ProductService implements IProductService {
 
     @Override
     public ProductDTO addProductWithCategory(Product product,Long categoryId) {
-        Category category = categoryRepository.findById(categoryId)
+        categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
         product.setCategoryId(categoryId);
         return mapToProductDTO(productRepository.save(product));
@@ -79,7 +82,7 @@ public class ProductService implements IProductService {
 
     @Override
     public List<ProductDTO> getProductByCategoryPageable(Pageable pageable,Long categoryId) {
-        Category category = categoryRepository.findById(categoryId)
+        categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
         List<ProductDTO> result = productRepository.getProductByCategory(categoryId,pageable).stream()
                 .map(product -> mapToProductDTO(product)).collect(Collectors.toList());

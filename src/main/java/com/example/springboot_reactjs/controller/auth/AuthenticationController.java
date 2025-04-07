@@ -24,9 +24,10 @@ public class AuthenticationController {
 
     @PostMapping(value = "/register")
     @ResponseBody
-    private AccountDTO register(@RequestBody Account account){
+    private ApiResponse register(@RequestBody Account account){
         accountService.checkUsernameExist(account.getUsername());
-        return accountService.saveAccount(account);
+        accountService.saveAccount(account);
+        return ApiResponse.builder().code(200).message("Đăng ký thành công").build();
     }
 
     @PostMapping(value = "/auth/login")
@@ -35,11 +36,10 @@ public class AuthenticationController {
         return accountService.verify(auth);
     }
 
-    @PostMapping(value = "/auth/logout")
-    public ResponseEntity<String> logout(@RequestBody LogoutRequest request){
-        jwtService.logout(request);
-            return ResponseEntity.ok("Logout Success");
-    }
+//    @PostMapping(value = "/auth/logout")
+//    public ResponseEntity<String> logout(@RequestBody LogoutRequest request){
+//        return ResponseEntity.ok("Logout Success");
+//    }
 
     @GetMapping(value = "/auth/myInfo")
     @ResponseBody
